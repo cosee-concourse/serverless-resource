@@ -9,7 +9,7 @@ RUN mkdir -p /aws && \
 # docker build --build-arg serverlessVersion=1.6.1
 ARG serverlessVersion
 
-RUN npm install -g serverless@$serverlessVersion
+RUN npm install --loglevel error -g serverless@$serverlessVersion
 
 COPY opt /opt
 
