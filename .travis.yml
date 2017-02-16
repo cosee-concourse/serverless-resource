@@ -11,6 +11,10 @@ env:
 services:
   - docker
 
+install:
+  - npm install serverless
+  - pip install -r requirements.txt
+
 script:
   - pytest
   - ./build.sh
