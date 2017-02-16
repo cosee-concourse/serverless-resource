@@ -1,7 +1,9 @@
 import unittest
+from unittest.mock import MagicMock
 
 import check
 from concourse import test_common
+from serverless import Serverless
 
 
 class TestCheck(unittest.TestCase):
@@ -35,6 +37,7 @@ class TestCheck(unittest.TestCase):
         self.assertEqual(check.execute(), 0)
 
     def test_json(self):
+        Serverless.execute_command = MagicMock(name='execute_command')
         test_common.put_stdin(
             """
             {
@@ -49,6 +52,10 @@ class TestCheck(unittest.TestCase):
             """)
 
         self.assertEqual(check.execute(), 0)
+        Serverless.execute_command.assert_called_once_with(['config', 'credentials',
+                                                            '--provider', 'aws',
+                                                            '--key', 'apiKey123',
+                                                            '--secret', 'secretKey321'])
 
 
 if __name__ == '__main__':

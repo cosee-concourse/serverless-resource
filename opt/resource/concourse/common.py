@@ -2,12 +2,14 @@ import json
 import sys
 import tempfile
 
+from jsonschema import Draft4Validator
+
 
 class Common:
     def __init__(self):
-        self.payload = ""
+        self.payload = ''
 
-    def get_payload(self):
+    def load_payload(self):
         payload = json.load(sys.stdin)
         _, file_name = tempfile.mkstemp()
         Common.log("Logging payload to {}".format(file_name))
@@ -16,7 +18,8 @@ class Common:
         self.payload = payload
         Common.log(payload)
 
-        return payload
+    def get_payload(self):
+        return self.payload
 
     def get_api_key(self):
         api_key = self.payload['source']['apiKey']
@@ -33,6 +36,20 @@ class Common:
             version = None
         return version
 
+    def validate_payload(self, schema):
+        return Common.validate_json(self.payload, schema)
+
     @staticmethod
     def log(*args, **kwargs):
         print(*args, file=sys.stderr, **kwargs)
+
+    @staticmethod
+    def validate_json(payload, schema):
+        v = Draft4Validator(schema)
+        valid = True
+
+        for error in sorted(v.iter_errors(payload), key=str):
+            Common.log(error.message)
+            valid = False
+
+        return valid

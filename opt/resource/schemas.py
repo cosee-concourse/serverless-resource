@@ -67,6 +67,12 @@ outSchema = {
                 },
                 "delete": {
                     "type": "boolean"
+                },
+                "serverlessFile": {
+                    "type": "string"
+                },
+                "directory": {
+                    "type": "string"
                 }
             },
             "oneOf": [{
@@ -79,6 +85,7 @@ outSchema = {
             }, {
                 "required": ["delete"]
             }],
+            "required": ["directory"],
             "additionalProperties": "false"
         }
     },

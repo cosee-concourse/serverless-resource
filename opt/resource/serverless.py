@@ -14,6 +14,12 @@ class Serverless:
                               '--key', self.common.get_api_key(),
                               '--secret', self.common.get_secret()])
 
+    def deploy_service(self):
+        return 0
+
+    def delete_service(self):
+        return 0
+
     @staticmethod
     def execute_command(command):
         commandToExecute = ['sls']

@@ -24,6 +24,7 @@ class TestCommon(unittest.TestCase):
 
     def test_getPayload(self):
         put_stdin(self.standard_payload)
+        self.common_instance.load_payload()
         result = self.common_instance.get_payload()
         self.assertEqual(result['source']['apiKey'], "apiKey123")
         self.assertEqual(result['source']['secretKey'], "secretKey321")
@@ -31,13 +32,13 @@ class TestCommon(unittest.TestCase):
 
     def test_getApiKey(self):
         put_stdin(self.standard_payload)
-        self.common_instance.get_payload()
+        self.common_instance.load_payload()
         api_key = self.common_instance.get_api_key()
         self.assertEqual(api_key, "apiKey123")
 
     def test_getSecretKey(self):
         put_stdin(self.standard_payload)
-        self.common_instance.get_payload()
+        self.common_instance.load_payload()
         secret_key = self.common_instance.get_secret()
         self.assertEqual(secret_key, "secretKey321")
 

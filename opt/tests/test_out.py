@@ -12,6 +12,8 @@ class TestOut(unittest.TestCase):
               "source": {
                 "apiKey": "apiKey123",
                 "secretKey": "secretKey321"
+              },
+              "params": {
               }
             }
             """)
@@ -41,7 +43,8 @@ class TestOut(unittest.TestCase):
               },
               "params": {
                 "appFile": "version-v1-dev",
-                "deploy": true
+                "deploy": true,
+                "directory": "artifact/lambda"
               }
             }
             """)

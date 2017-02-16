@@ -1,31 +1,33 @@
 #! /usr/bin/env python3
-from jsonschema import Draft4Validator
-from jsonschema import validate
-
 import schemas
 from concourse.common import Common
+from serverless import Serverless
 
 
 def execute():
     common = Common()
+    common.load_payload()
+
+    if not common.validate_payload(schemas.outSchema):
+        return -1
+
+    serverless = Serverless(common)
+    serverless.set_credentials()
+
     payload = common.get_payload()
 
-    validation_result = validate(payload)
-    if validation_result != 0:
-        return validation_result
+    result = 0
 
-    return 0
+    if 'deploy' in payload['params'] and payload['params']['deploy']:
+        result = serverless.deploy_service()
 
+    if result != 0:
+        return result
 
-def validate(payload):
-    v = Draft4Validator(schemas.outSchema)
-    valid = True
+    if 'delete' in payload['params'] and payload['params']['delete']:
+        serverless.delete_service()
 
-    for error in sorted(v.iter_errors(payload), key=str):
-        Common.log(error.message)
-        valid = False
-
-    return 0 if valid else -1
+    return result
 
 
 if __name__ == '__main__':
