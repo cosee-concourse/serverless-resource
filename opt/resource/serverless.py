@@ -35,16 +35,16 @@ class Serverless:
 
         def print_stderr(prog):
             for line in prog.stderr.readlines():
-                Common.log(line.rstrip())
+                Common.log(line.rstrip().decode('ascii'))
 
         def print_stdout(prog):
             """
             print stdout to stderr because only thing printed to stdout should be result json
             """
             for line in prog.stdout.readlines():
-                Common.log(line.rstrip())
+                Common.log(line.rstrip().decode('ascii'))
 
-        p = Popen(commandToExecute, stdout=PIPE, stderr=PIPE, cwd=directory or '/')
+        p = Popen(commandToExecute, stdout=PIPE, stderr=PIPE, shell=True, cwd=directory or '/')
 
         out_p = Process(target=print_stdout(p))
         out_e = Process(target=print_stderr(p))
