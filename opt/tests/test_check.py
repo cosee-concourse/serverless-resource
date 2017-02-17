@@ -7,6 +7,9 @@ from serverless import Serverless
 
 
 class TestCheck(unittest.TestCase):
+    def setUp(self):
+        Serverless.execute_command = MagicMock(name='execute_command')
+
     def test_invalid_json(self):
         test_common.put_stdin(
             """
@@ -36,8 +39,21 @@ class TestCheck(unittest.TestCase):
 
         self.assertEqual(check.execute(), 0)
 
+    def test_version_is_null(self):
+        test_common.put_stdin(
+            """
+            {
+               "source":{
+                  "apiKey": "apiKey123",
+                  "secretKey": "secretKey321"
+               },
+               "version": null
+            }
+            """)
+
+        self.assertEqual(check.execute(), 0)
+
     def test_json(self):
-        Serverless.execute_command = MagicMock(name='execute_command')
         test_common.put_stdin(
             """
             {

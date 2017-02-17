@@ -15,6 +15,8 @@ def execute():
     serverless = Serverless(common)
     serverless.set_credentials()
 
+    print([{}])
+
     return 0
 
 
