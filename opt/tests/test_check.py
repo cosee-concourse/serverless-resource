@@ -53,6 +53,20 @@ class TestCheck(unittest.TestCase):
 
         self.assertEqual(check.execute(), 0)
 
+    def test_version_is_empty(self):
+        test_common.put_stdin(
+            """
+            {
+               "source":{
+                  "apiKey": "apiKey123",
+                  "secretKey": "secretKey321"
+               },
+               "version": {}
+            }
+            """)
+
+        self.assertEqual(check.execute(), 0)
+
     def test_json(self):
         test_common.put_stdin(
             """

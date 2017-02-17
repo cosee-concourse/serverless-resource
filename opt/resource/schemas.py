@@ -24,10 +24,7 @@ checkSchema = {
                     "ref": {
                         "type": "string"
                     }
-                },
-                "required": [
-                    "ref"
-                ]
+                }
             }, {
                 "type": "null"
             }]
