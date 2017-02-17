@@ -26,7 +26,7 @@ class Serverless:
             Common.log("Directory is not set.")
             return -1
 
-        return self.execute_command(['deploy'], self.common.directory)
+        return self.execute_command(['delete'], self.common.directory)
 
     @staticmethod
     def execute_command(command, directory=None):
@@ -54,5 +54,8 @@ class Serverless:
 
         out_p.join()
         out_e.join()
+
+        p.communicate()
+        Common.log("{} exited with {}".format(command, p.returncode))
 
         return p.returncode
