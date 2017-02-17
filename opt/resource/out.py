@@ -1,12 +1,16 @@
 #! /usr/bin/env python3
+import json
+import sys
+
 import schemas
 from concourse.common import Common
 from serverless import Serverless
 
 
-def execute():
+def execute(directory):
     common = Common()
     common.load_payload()
+    common.directory = directory
 
     if not common.validate_payload(schemas.outSchema):
         return -1
@@ -27,8 +31,14 @@ def execute():
     if 'delete' in payload['params'] and payload['params']['delete']:
         serverless.delete_service()
 
+    if result == 0:
+        print(json.dumps({'version': {'ref': 'appName'}}))
+
     return result
 
 
 if __name__ == '__main__':
-    exit(execute())
+    if len(sys.argv) < 2:
+        Common.log("Wrong number of arguments!")
+        exit(-1)
+    exit(execute(sys.argv[1]))

@@ -9,19 +9,27 @@ class Serverless:
         self.common = common
 
     def set_credentials(self):
-        self.execute_command(['config', 'credentials',
-                              '--provider', 'aws',
-                              '--key', self.common.get_api_key(),
-                              '--secret', self.common.get_secret()])
+        return self.execute_command(['config', 'credentials',
+                                     '--provider', 'aws',
+                                     '--key', self.common.get_api_key(),
+                                     '--secret', self.common.get_secret()])
 
     def deploy_service(self):
-        return 0
+        if self.common.directory is '':
+            Common.log("Directory is not set.")
+            return -1
+
+        return self.execute_command(['deploy'], self.common.directory)
 
     def delete_service(self):
-        return 0
+        if self.common.directory is '':
+            Common.log("Directory is not set.")
+            return -1
+
+        return self.execute_command(['deploy'], self.common.directory)
 
     @staticmethod
-    def execute_command(command):
+    def execute_command(command, directory=None):
         commandToExecute = ['sls']
         commandToExecute.extend(command)
 
@@ -36,7 +44,7 @@ class Serverless:
             for line in prog.stdout.readlines():
                 Common.log(line.rstrip())
 
-        p = Popen(commandToExecute, stdout=PIPE, stderr=PIPE)
+        p = Popen(commandToExecute, stdout=PIPE, stderr=PIPE, cwd=directory or '/')
 
         out_p = Process(target=print_stdout(p))
         out_e = Process(target=print_stderr(p))

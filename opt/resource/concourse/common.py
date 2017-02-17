@@ -8,6 +8,7 @@ from jsonschema import Draft4Validator
 class Common:
     def __init__(self):
         self.payload = ''
+        self.directory = ''
 
     def load_payload(self):
         payload = json.load(sys.stdin)

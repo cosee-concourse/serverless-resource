@@ -16,3 +16,7 @@ jobs:
   serial: true
   plan:
   - put: aws-production
+    params:
+      - appName: production
+      - deploy: true
+      - directory: artifact
