@@ -18,15 +18,19 @@ checkSchema = {
             ]
         },
         "version": {
-            "type": "object",
-            "properties": {
-                "ref": {
-                    "type": "string"
-                }
-            },
-            "required": [
-                "ref"
-            ]
+            "oneOf": [{
+                "type": "object",
+                "properties": {
+                    "ref": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "ref"
+                ]
+            }, {
+                "type": "null"
+            }]
         }
     },
     "required": [
