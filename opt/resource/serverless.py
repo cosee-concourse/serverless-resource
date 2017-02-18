@@ -1,3 +1,4 @@
+import os
 from multiprocessing import Process
 from subprocess import Popen, PIPE
 
@@ -37,10 +38,13 @@ class Serverless:
 
         return self.execute_command(deleteCommand, self.common.directory)
 
-    @staticmethod
-    def execute_command(command, directory=None):
+    def execute_command(self, command, directory=None):
         commandToExecute = ['sls']
         commandToExecute.extend(command)
+
+        slsEnv = os.environ.copy()
+        if self.stage is not None:
+            slsEnv['STAGE'] = self.stage
 
         def print_stderr(prog):
             for line in prog.stderr.readlines():
@@ -53,7 +57,7 @@ class Serverless:
             for line in prog.stdout.readlines():
                 Common.log(line.rstrip().decode('ascii'))
 
-        p = Popen(commandToExecute, stdout=PIPE, stderr=PIPE, shell=True, cwd=directory or '/')
+        p = Popen(commandToExecute, stdout=PIPE, stderr=PIPE, shell=True, env=slsEnv, cwd=directory or '/')
 
         out_p = Process(target=print_stdout(p))
         out_e = Process(target=print_stderr(p))
