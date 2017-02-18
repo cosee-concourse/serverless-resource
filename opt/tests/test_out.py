@@ -49,7 +49,7 @@ class TestOut(unittest.TestCase):
                 "secretKey": "secretKey321"
               },
               "params": {
-                "appFile": "version-v1-dev",
+                "stageFile": "version-v1-dev",
                 "deploy": true,
                 "directory": "artifact/lambda"
               }

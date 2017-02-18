@@ -57,10 +57,10 @@ outSchema = {
         "params": {
             "type": "object",
             "properties": {
-                "appFile": {
+                "stageFile": {
                     "type": "string"
                 },
-                "appName": {
+                "stage": {
                     "type": "string"
                 },
                 "deploy": {
@@ -77,9 +77,9 @@ outSchema = {
                 }
             },
             "oneOf": [{
-                "required": ["appFile"]
+                "required": ["stageFile"]
             }, {
-                "required": ["appName"]
+                "required": ["stage"]
             }],
             "oneOf": [{
                 "required": ["deploy"]
