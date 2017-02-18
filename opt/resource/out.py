@@ -42,7 +42,7 @@ def execute(directory):
         serverless.delete_service()
 
     if result == 0:
-        print(json.dumps({'version': {'ref': 'appName'}}))
+        print(json.dumps({'version': {'stage': stage}}))
 
     return result
 

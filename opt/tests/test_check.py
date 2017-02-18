@@ -19,7 +19,7 @@ class TestCheck(unittest.TestCase):
                   "secretKey": "secretKey321"
                },
                "version":{
-                  "ref": "version-v1-dev"
+                  "schema": "version-v1-dev"
                }
             }
             """)
@@ -76,7 +76,7 @@ class TestCheck(unittest.TestCase):
                   "secretKey": "secretKey321"
                },
                "version":{
-                  "ref": "version-v1-dev"
+                  "schema": "version-v1-dev"
                }
             }
             """)

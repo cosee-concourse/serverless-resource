@@ -1,34 +1,38 @@
+sourceSchema = {
+    "type": "object",
+    "properties": {
+        "apiKey": {
+            "type": "string"
+        },
+        "secretKey": {
+            "type": "string"
+        }
+    },
+    "required": [
+        "apiKey",
+        "secretKey"
+    ]
+}
+
+versionSchema = {
+    "oneOf": [{
+        "type": "object",
+        "properties": {
+            "schema": {
+                "type": "string"
+            }
+        }
+    }, {
+        "type": "null"
+    }]
+}
+
 checkSchema = {
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
     "properties": {
-        "source": {
-            "type": "object",
-            "properties": {
-                "apiKey": {
-                    "type": "string"
-                },
-                "secretKey": {
-                    "type": "string"
-                }
-            },
-            "required": [
-                "apiKey",
-                "secretKey"
-            ]
-        },
-        "version": {
-            "oneOf": [{
-                "type": "object",
-                "properties": {
-                    "ref": {
-                        "type": "string"
-                    }
-                }
-            }, {
-                "type": "null"
-            }]
-        }
+        "source": sourceSchema,
+        "version": versionSchema
     },
     "required": [
         "source"
@@ -39,21 +43,7 @@ outSchema = {
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
     "properties": {
-        "source": {
-            "type": "object",
-            "properties": {
-                "apiKey": {
-                    "type": "string"
-                },
-                "secretKey": {
-                    "type": "string"
-                }
-            },
-            "required": [
-                "apiKey",
-                "secretKey"
-            ]
-        },
+        "source": sourceSchema,
         "params": {
             "type": "object",
             "properties": {
@@ -93,5 +83,18 @@ outSchema = {
     "required": [
         "source",
         "params"
+    ]
+}
+
+inSchema = {
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "type": "object",
+    "properties": {
+        "source": sourceSchema,
+        "version": versionSchema
+    },
+    "required": [
+        "source",
+        "version"
     ]
 }
