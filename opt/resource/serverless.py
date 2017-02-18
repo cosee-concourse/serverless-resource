@@ -5,8 +5,9 @@ from concourse.common import Common
 
 
 class Serverless:
-    def __init__(self, common):
+    def __init__(self, common, stage=None):
         self.common = common
+        self.stage = stage
 
     def set_credentials(self):
         return self.execute_command(['config', 'credentials',
@@ -19,14 +20,22 @@ class Serverless:
             Common.log("Directory is not set.")
             return -1
 
-        return self.execute_command(['deploy'], self.common.directory)
+        deployCommand = ['deploy']
+        if self.stage is not None:
+            deployCommand.extend(['--stage', self.stage])
+
+        return self.execute_command(deployCommand, self.common.directory)
 
     def delete_service(self):
         if self.common.directory is '':
             Common.log("Directory is not set.")
             return -1
 
-        return self.execute_command(['delete'], self.common.directory)
+        deleteCommand = ['delete']
+        if self.stage is not None:
+            deleteCommand.extend(['--stage', self.stage])
+
+        return self.execute_command(deleteCommand, self.common.directory)
 
     @staticmethod
     def execute_command(command, directory=None):

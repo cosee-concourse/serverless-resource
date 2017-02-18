@@ -1,5 +1,7 @@
 #! /usr/bin/env python3
+import io
 import json
+import os
 import sys
 
 import schemas
@@ -15,10 +17,18 @@ def execute(directory):
     if not common.validate_payload(schemas.outSchema):
         return -1
 
-    serverless = Serverless(common)
-    serverless.set_credentials()
-
     payload = common.get_payload()
+
+    if 'stageFile' in payload['params']:
+        stage = io.open(os.path.join(directory, payload['params']['stageFile']), "r").read()
+    elif 'stage' in payload['params']:
+        stage = payload['params']['stage']
+    else:
+        Common.log("Requires stage or stageFile.")
+        return -1
+
+    serverless = Serverless(common, stage)
+    serverless.set_credentials()
 
     result = 0
 
