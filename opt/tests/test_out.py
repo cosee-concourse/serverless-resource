@@ -1,6 +1,8 @@
 import unittest
 from unittest.mock import MagicMock
 
+from colorama import init
+
 import out
 from concourse import test_common
 from serverless import Serverless
@@ -8,6 +10,7 @@ from serverless import Serverless
 
 class TestOut(unittest.TestCase):
     def setUp(self):
+        init(autoreset=True)
         Serverless.execute_command = MagicMock(name='execute_command')
 
     def test_invalid_json(self):

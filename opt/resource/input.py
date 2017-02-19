@@ -2,6 +2,8 @@
 
 import sys
 
+from colorama import init
+
 import schemas
 from concourse.common import Common
 from serverless import Serverless
@@ -23,6 +25,7 @@ def execute(directory):
 
 
 if __name__ == '__main__':
+    init(autoreset=True)
     if len(sys.argv) < 2:
         Common.log("Wrong number of arguments!")
         exit(-1)

@@ -2,6 +2,8 @@ import json
 import sys
 import tempfile
 
+from colorama import Back
+from colorama import Fore
 from jsonschema import Draft4Validator
 
 
@@ -17,7 +19,7 @@ class Common:
         with open(file_name, 'w') as fp:
             fp.write(json.dumps(payload))
         self.payload = payload
-        Common.log(payload)
+        Common.log(Fore.YELLOW + str(payload))
 
     def get_payload(self):
         return self.payload
@@ -50,7 +52,7 @@ class Common:
         valid = True
 
         for error in sorted(v.iter_errors(payload), key=str):
-            Common.log(error.message)
+            Common.log(Fore.WHITE + Back.RED + error.message)
             valid = False
 
         return valid

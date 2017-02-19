@@ -1,4 +1,5 @@
 #! /usr/bin/env python3
+from colorama import init
 
 import schemas
 from concourse.common import Common
@@ -21,4 +22,5 @@ def execute():
 
 
 if __name__ == '__main__':
+    init(autoreset=True)
     exit(execute())
