@@ -1,7 +1,7 @@
 import unittest
 from unittest.mock import MagicMock
 
-import input
+import in_
 from concourse import test_common
 from serverless import Serverless
 
@@ -23,4 +23,4 @@ class TestInput(unittest.TestCase):
             }
             """)
 
-        self.assertEqual(input.execute('/'), -1)
+        self.assertEqual(in_.execute('/'), -1)
