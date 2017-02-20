@@ -17,6 +17,6 @@ jobs:
   plan:
   - put: aws-production
     params:
-      - appName: production
+      - stage: production
       - deploy: true
       - directory: artifact

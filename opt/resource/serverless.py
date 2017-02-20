@@ -57,7 +57,7 @@ class Serverless:
             for line in prog.stdout.readlines():
                 Common.log(line.rstrip().decode('ascii'))
 
-        p = Popen(commandToExecute, stdout=PIPE, stderr=PIPE, shell=True, env=slsEnv, cwd=directory or '/')
+        p = Popen(commandToExecute, stdout=PIPE, stderr=PIPE, env=slsEnv, cwd=directory or '/')
 
         out_p = Process(target=print_stdout(p))
         out_e = Process(target=print_stderr(p))
@@ -69,6 +69,6 @@ class Serverless:
         out_e.join()
 
         p.communicate()
-        Common.log("{} exited with {}".format(command, p.returncode))
+        Common.log("{} exited with {}".format(commandToExecute, p.returncode))
 
         return p.returncode
