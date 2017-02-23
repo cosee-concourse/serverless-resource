@@ -77,7 +77,7 @@ outSchema = {
             "oneOf": [{
                 "required": ["deploy"]
             }, {
-                "required": ["delete"]
+                "required": ["remove"]
             }],
             "required": ["directory"],
             "additionalProperties": "false"

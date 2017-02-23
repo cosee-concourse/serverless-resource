@@ -21,34 +21,34 @@ class Serverless:
             Common.log("Directory is not set.")
             return -1
 
-        deployCommand = ['deploy']
+        deploy_command = ['deploy']
         if self.stage is not None:
-            deployCommand.extend(['--stage', self.stage])
+            deploy_command.extend(['--stage', self.stage])
 
         region = self.common.get_region()
         if region is not None:
-            deployCommand.extend(['--region', region])
+            deploy_command.extend(['--region', region])
 
-        return self.execute_command(deployCommand, self.common.directory)
+        return self.execute_command(deploy_command, self.common.directory)
 
-    def delete_service(self):
+    def remove_service(self):
         if self.common.directory is '':
             Common.log("Directory is not set.")
             return -1
 
-        deleteCommand = ['delete']
+        remove_command = ['remove']
         if self.stage is not None:
-            deleteCommand.extend(['--stage', self.stage])
+            remove_command.extend(['--stage', self.stage])
 
         region = self.common.get_region()
         if region is not None:
-            deleteCommand.extend(['--region', region])
+            remove_command.extend(['--region', region])
 
-        return self.execute_command(deleteCommand, self.common.directory)
+        return self.execute_command(remove_command, self.common.directory)
 
     def execute_command(self, command, directory=None):
-        commandToExecute = ['sls']
-        commandToExecute.extend(command)
+        exec_command = ['sls']
+        exec_command.extend(command)
 
         slsEnv = os.environ.copy()
         if self.stage is not None:
@@ -65,7 +65,7 @@ class Serverless:
             for line in prog.stdout.readlines():
                 Common.log(line.rstrip().decode('ascii'))
 
-        p = Popen(commandToExecute, stdout=PIPE, stderr=PIPE, env=slsEnv, cwd=directory or '/')
+        p = Popen(exec_command, stdout=PIPE, stderr=PIPE, env=slsEnv, cwd=directory or '/')
 
         out_p = Process(target=print_stdout(p))
         out_e = Process(target=print_stderr(p))
@@ -77,6 +77,6 @@ class Serverless:
         out_e.join()
 
         p.communicate()
-        Common.log("{} exited with {}".format(commandToExecute, p.returncode))
+        Common.log("{} exited with {}".format(exec_command, p.returncode))
 
         return p.returncode

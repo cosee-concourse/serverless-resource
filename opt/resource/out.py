@@ -41,8 +41,8 @@ def execute(directory):
     if result != 0:
         return result
 
-    if 'delete' in payload['params'] and payload['params']['delete']:
-        serverless.delete_service()
+    if 'remove' in payload['params'] and payload['params']['remove']:
+        serverless.remove_service()
 
     if result == 0:
         print(json.dumps({'version': {'stage': stage}}))

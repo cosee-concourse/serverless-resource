@@ -62,6 +62,27 @@ class TestOut(unittest.TestCase):
         self.assertEqual(out.execute(r'/tmp/put/'), 0)
         Serverless.execute_command.assert_called_with(['deploy', '--stage', 'version-v1-dev'], r'/tmp/put/')
 
+    def test_remove(self):
+        Serverless.execute_command.return_value = 0
+
+        test_common.put_stdin(
+            """
+            {
+              "source": {
+                "apiKey": "apiKey123",
+                "secretKey": "secretKey321"
+              },
+              "params": {
+                "stage": "version-v1-dev",
+                "remove": true,
+                "directory": "artifact/lambda"
+              }
+            }
+            """)
+
+        self.assertEqual(out.execute(r'/tmp/put/'), 0)
+        Serverless.execute_command.assert_called_with(['remove', '--stage', 'version-v1-dev'], r'/tmp/put/')
+
     def test_json_region(self):
         Serverless.execute_command.return_value = 0
 
