@@ -32,12 +32,17 @@ class Common:
         secret_key = self.payload['source']['secretKey']
         return secret_key
 
-    def get_version(self):
+    def get_stage(self):
         try:
-            version = self.payload['version']['version']
+            stage = self.payload['version']['stage']
         except TypeError:
-            version = None
-        return version
+            stage = None
+        return stage
+
+    def get_region(self):
+        if 'region' in self.payload['source']:
+            return self.payload['source']['region']
+        return None
 
     def validate_payload(self, schema):
         return Common.validate_json(self.payload, schema)

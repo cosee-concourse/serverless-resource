@@ -1,5 +1,6 @@
 #! /usr/bin/env python3
 
+import os
 import sys
 
 from colorama import Fore
@@ -19,6 +20,9 @@ def execute(directory):
 
     serverless = Serverless(common, directory)
     serverless.set_credentials()
+
+    with open(os.path.join(directory, "stage"), "w+") as file:
+        file.write(common.get_stage())
 
     print([{}])
 

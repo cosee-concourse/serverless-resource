@@ -6,6 +6,9 @@ sourceSchema = {
         },
         "secretKey": {
             "type": "string"
+        },
+        "region": {
+            "type": "string"
         }
     },
     "required": [

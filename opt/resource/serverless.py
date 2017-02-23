@@ -25,6 +25,10 @@ class Serverless:
         if self.stage is not None:
             deployCommand.extend(['--stage', self.stage])
 
+        region = self.common.get_region()
+        if region is not None:
+            deployCommand.extend(['--region', region])
+
         return self.execute_command(deployCommand, self.common.directory)
 
     def delete_service(self):
@@ -35,6 +39,10 @@ class Serverless:
         deleteCommand = ['delete']
         if self.stage is not None:
             deleteCommand.extend(['--stage', self.stage])
+
+        region = self.common.get_region()
+        if region is not None:
+            deleteCommand.extend(['--region', region])
 
         return self.execute_command(deleteCommand, self.common.directory)
 
