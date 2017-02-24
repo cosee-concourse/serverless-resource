@@ -10,8 +10,8 @@ class TestCommon(unittest.TestCase):
         """
         {
         "source": {
-            "apiKey": "apiKey123",
-            "secretKey": "secretKey321"
+            "access_key_id": "apiKey123",
+            "secret_access_key": "secretKey321"
             },
             "version": {
                 "ref": "version-v1-dev"
@@ -26,8 +26,8 @@ class TestCommon(unittest.TestCase):
         put_stdin(self.standard_payload)
         self.common_instance.load_payload()
         result = self.common_instance.get_payload()
-        self.assertEqual(result['source']['apiKey'], "apiKey123")
-        self.assertEqual(result['source']['secretKey'], "secretKey321")
+        self.assertEqual(result['source']['access_key_id'], "apiKey123")
+        self.assertEqual(result['source']['secret_access_key'], "secretKey321")
         self.assertEqual(result['version']['ref'], "version-v1-dev")
 
     def test_getApiKey(self):

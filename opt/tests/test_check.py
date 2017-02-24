@@ -15,8 +15,8 @@ class TestCheck(unittest.TestCase):
             """
             {
                "sourcez":{
-                  "apiKey": "apiKey123",
-                  "secretKey": "secretKey321"
+                  "access_key_id": "apiKey123",
+                  "secret_access_key": "secretKey321"
                },
                "version":{
                   "schema": "version-v1-dev"
@@ -31,8 +31,8 @@ class TestCheck(unittest.TestCase):
             """
             {
                "source":{
-                  "apiKey": "apiKey123",
-                  "secretKey": "secretKey321"
+                  "access_key_id": "apiKey123",
+                  "secret_access_key": "secretKey321"
                }
             }
             """)
@@ -44,8 +44,8 @@ class TestCheck(unittest.TestCase):
             """
             {
                "source":{
-                  "apiKey": "apiKey123",
-                  "secretKey": "secretKey321"
+                  "access_key_id": "apiKey123",
+                  "secret_access_key": "secretKey321"
                },
                "version": null
             }
@@ -58,8 +58,8 @@ class TestCheck(unittest.TestCase):
             """
             {
                "source":{
-                  "apiKey": "apiKey123",
-                  "secretKey": "secretKey321"
+                  "access_key_id": "apiKey123",
+                  "secret_access_key": "secretKey321"
                },
                "version": {}
             }
@@ -72,8 +72,8 @@ class TestCheck(unittest.TestCase):
             """
             {
                "source":{
-                  "apiKey": "apiKey123",
-                  "secretKey": "secretKey321"
+                  "access_key_id": "apiKey123",
+                  "secret_access_key": "secretKey321"
                },
                "version":{
                   "schema": "version-v1-dev"

@@ -16,8 +16,8 @@ class TestInput(unittest.TestCase):
             """
             {
               "source": {
-                "apiKey": "apiKey123",
-                "secretKey": "secretKey321"
+                "access_key_id": "apiKey123",
+                "secret_access_key": "secretKey321"
               },
               "params": {
               }
@@ -34,8 +34,8 @@ class TestInput(unittest.TestCase):
                 """
                 {
                   "source": {
-                    "apiKey": "apiKey123",
-                    "secretKey": "secretKey321"
+                    "access_key_id": "apiKey123",
+                    "secret_access_key": "secretKey321"
                   },
                   "version": {
                     "stage": "1.0.0-rc.42"

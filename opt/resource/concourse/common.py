@@ -1,4 +1,5 @@
 import json
+import os
 import sys
 import tempfile
 
@@ -25,11 +26,11 @@ class Common:
         return self.payload
 
     def get_api_key(self):
-        api_key = self.payload['source']['apiKey']
+        api_key = self.payload['source']['access_key_id']
         return api_key
 
     def get_secret(self):
-        secret_key = self.payload['source']['secretKey']
+        secret_key = self.payload['source']['secret_access_key']
         return secret_key
 
     def get_stage(self):
@@ -40,9 +41,21 @@ class Common:
         return stage
 
     def get_region(self):
-        if 'region' in self.payload['source']:
-            return self.payload['source']['region']
+        if 'region_name' in self.payload['source']:
+            return self.payload['source']['region_name']
         return None
+
+    def get_serverless_file(self):
+        serverless_file = self.payload['params']['serverless_file']
+        serverless_filepath = os.path.join(serverless_file, 'serverless.yml')
+        return serverless_filepath
+
+    def get_artifact_folder(self):
+        try:
+            artifact_folder = self.payload['params']['artifact_folder']
+        except KeyError:
+            artifact_folder = None
+        return artifact_folder
 
     def validate_payload(self, schema):
         return Common.validate_json(self.payload, schema)

@@ -1,19 +1,19 @@
 sourceSchema = {
     "type": "object",
     "properties": {
-        "apiKey": {
+        "access_key_id": {
             "type": "string"
         },
-        "secretKey": {
+        "secret_access_key": {
             "type": "string"
         },
-        "region": {
+        "region_name": {
             "type": "string"
         }
     },
     "required": [
-        "apiKey",
-        "secretKey"
+        "access_key_id",
+        "secret_access_key"
     ]
 }
 
@@ -62,10 +62,10 @@ outSchema = {
                 "delete": {
                     "type": "boolean"
                 },
-                "serverlessFile": {
+                "serverless_file": {
                     "type": "string"
                 },
-                "directory": {
+                "artifact_folder": {
                     "type": "string"
                 }
             },
@@ -79,7 +79,10 @@ outSchema = {
             }, {
                 "required": ["remove"]
             }],
-            "required": ["directory"],
+            "required": [
+                "serverless_file",
+                "artifact_folder"
+            ],
             "additionalProperties": "false"
         }
     },

@@ -1,5 +1,5 @@
 import unittest
-from unittest.mock import MagicMock
+from unittest.mock import MagicMock, patch
 
 from colorama import init
 
@@ -18,8 +18,8 @@ class TestOut(unittest.TestCase):
             """
             {
               "source": {
-                "apiKey": "apiKey123",
-                "secretKey": "secretKey321"
+                "access_key_id": "apiKey123",
+                "secret_access_key": "secretKey321"
               },
               "params": {
               }
@@ -33,34 +33,37 @@ class TestOut(unittest.TestCase):
             """
             {
               "source": {
-                "apiKey": "apiKey123",
-                "secretKey": "secretKey321"
+                "access_key_id": "apiKey123",
+                "secret_access_key": "secretKey321"
               }
             }
             """)
 
         self.assertEqual(out.execute('/'), -1)
 
-    def test_json(self):
+    @patch("out.shutil")
+    def test_deploy(self, mock_shutil):
         Serverless.execute_command.return_value = 0
 
         test_common.put_stdin(
             """
             {
               "source": {
-                "apiKey": "apiKey123",
-                "secretKey": "secretKey321"
+                "access_key_id": "apiKey123",
+                "secret_access_key": "secretKey321"
               },
               "params": {
                 "stage": "version-v1-dev",
                 "deploy": true,
-                "directory": "artifact/lambda"
+                "artifact_folder": "artifact/lambda",
+                "serverless_file": "source/ci/"
               }
             }
             """)
 
         self.assertEqual(out.execute(r'/tmp/put/'), 0)
-        Serverless.execute_command.assert_called_with(['deploy', '--stage', 'version-v1-dev'], r'/tmp/put/')
+        mock_shutil.copyfile.assert_called_with(r'/tmp/put/source/ci/serverless.yml', r'/tmp/put/artifact/lambda/serverless.yml')
+        Serverless.execute_command.assert_called_with(['deploy', '--stage', 'version-v1-dev'], r'/tmp/put/artifact/lambda')
 
     def test_remove(self):
         Serverless.execute_command.return_value = 0
@@ -69,42 +72,46 @@ class TestOut(unittest.TestCase):
             """
             {
               "source": {
-                "apiKey": "apiKey123",
-                "secretKey": "secretKey321"
+                "access_key_id": "apiKey123",
+                "secret_access_key": "secretKey321"
               },
               "params": {
                 "stage": "version-v1-dev",
                 "remove": true,
-                "directory": "artifact/lambda"
+                "artifact_folder": "artifact/lambda",
+                "serverless_file": "source/ci/"
               }
             }
             """)
 
         self.assertEqual(out.execute(r'/tmp/put/'), 0)
-        Serverless.execute_command.assert_called_with(['remove', '--stage', 'version-v1-dev'], r'/tmp/put/')
+        Serverless.execute_command.assert_called_with(['remove', '--stage', 'version-v1-dev'], r'/tmp/put/source/ci')
 
-    def test_json_region(self):
+    @patch("out.shutil")
+    def test_json_deploy_region(self, mock_shutil):
         Serverless.execute_command.return_value = 0
 
         test_common.put_stdin(
             """
             {
               "source": {
-                "apiKey": "apiKey123",
-                "secretKey": "secretKey321",
-                "region": "eu-south-1"
+                "access_key_id": "apiKey123",
+                "secret_access_key": "secretKey321",
+                "region_name": "eu-south-1"
               },
               "params": {
                 "stage": "version-v1-dev",
                 "deploy": true,
-                "directory": "artifact/lambda"
+                "artifact_folder": "artifact/lambda",
+                "serverless_file": "source/ci/"
               }
             }
             """)
 
         self.assertEqual(out.execute(r'/tmp/put/'), 0)
+        mock_shutil.copyfile.assert_called_with("/tmp/put/source/ci/serverless.yml", "/tmp/put/artifact/lambda/serverless.yml")
         Serverless.execute_command.assert_called_with(
-            ['deploy', '--stage', 'version-v1-dev', '--region', 'eu-south-1'], r'/tmp/put/')
+            ['deploy', '--stage', 'version-v1-dev', '--region', 'eu-south-1'], r'/tmp/put/artifact/lambda')
 
 
 if __name__ == '__main__':

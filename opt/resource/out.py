@@ -1,7 +1,8 @@
 #! /usr/bin/env python3
 import io
 import json
-import os
+from os import path
+import shutil
 import sys
 
 from colorama import Fore
@@ -23,7 +24,7 @@ def execute(directory):
     payload = common.get_payload()
 
     if 'stageFile' in payload['params']:
-        stage = io.open(os.path.join(directory, payload['params']['stageFile']), "r").read()
+        stage = io.open(path.join(directory, payload['params']['stageFile']), "r").read()
     elif 'stage' in payload['params']:
         stage = payload['params']['stage']
     else:
@@ -35,13 +36,19 @@ def execute(directory):
 
     result = 0
 
+    serverless_filepath = path.join(directory, common.get_serverless_file())
+
     if 'deploy' in payload['params'] and payload['params']['deploy']:
+        artifact_folder = path.join(directory,common.get_artifact_folder())
+        shutil.copyfile(serverless_filepath, path.join(artifact_folder, path.basename(serverless_filepath)))
+        common.directory = path.join(directory, artifact_folder)
         result = serverless.deploy_service()
 
     if result != 0:
         return result
 
     if 'remove' in payload['params'] and payload['params']['remove']:
+        common.directory = path.dirname(serverless_filepath)
         serverless.remove_service()
 
     if result == 0:
