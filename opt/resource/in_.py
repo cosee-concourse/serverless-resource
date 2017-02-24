@@ -1,5 +1,5 @@
 #! /usr/bin/env python3
-
+import json
 import os
 import sys
 
@@ -24,7 +24,10 @@ def execute(directory):
     with open(os.path.join(directory, "stage"), "w+") as file:
         file.write(common.get_stage())
 
-    print([{}])
+    if common.get_stage() is None:
+        print([{}])
+    else:
+        print(json.dumps({"version": {"stage": common.get_stage()}}))
 
     return 0
 

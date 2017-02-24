@@ -36,7 +36,7 @@ class Common:
     def get_stage(self):
         try:
             stage = self.payload['version']['stage']
-        except TypeError:
+        except KeyError:
             stage = None
         return stage
 
