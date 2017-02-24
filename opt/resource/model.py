@@ -30,7 +30,7 @@ class Model:
         secret_key = self.payload['source']['secret_access_key']
         return secret_key
 
-    def get_region(self):
+    def get_region_name(self):
         if 'region_name' in self.payload['source']:
             return self.payload['source']['region_name']
         return None

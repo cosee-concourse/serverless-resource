@@ -25,7 +25,7 @@ class Serverless:
         if self.stage is not None:
             deploy_command.extend(['--stage', self.stage])
 
-        region = self.model.get_region()
+        region = self.model.get_region_name()
         if region is not None:
             deploy_command.extend(['--region', region])
 
@@ -40,7 +40,7 @@ class Serverless:
         if self.stage is not None:
             remove_command.extend(['--stage', self.stage])
 
-        region = self.model.get_region()
+        region = self.model.get_region_name()
         if region is not None:
             remove_command.extend(['--region', region])
 
