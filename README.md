@@ -38,7 +38,7 @@ Uses `serverless_file` and artifacts in `artifact_folder` to deploy stack.
 * `serverless_file`: Folder path that contains serverless.yml. 
 
 * `artifact_folder`: Path to artifacts that are used in the serverless.yml. 
-Make sure the artifact references in the serverless.yaml is in this folder.
+Make sure the artifact references in the serverless.yml is in this folder.
  
 * `stageFile`: Path to a file that contains the stage name of the stack
 

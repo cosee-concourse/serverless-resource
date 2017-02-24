@@ -53,6 +53,7 @@ class Serverless:
         slsEnv = os.environ.copy()
         if self.stage is not None:
             slsEnv['STAGE'] = self.stage
+            slsEnv['BUCKET_NAME'] = self.stage
 
         def print_stderr(prog):
             for line in prog.stderr.readlines():
