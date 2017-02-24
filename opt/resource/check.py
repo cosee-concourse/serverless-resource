@@ -1,19 +1,15 @@
 #! /usr/bin/env python3
-from colorama import init
-
-import schemas
-from concourse.common import Common
+from model import Model, Request
 from serverless import Serverless
 
 
 def execute():
-    common = Common()
-    common.load_payload()
-
-    if not common.validate_payload(schemas.checkSchema):
+    try:
+        model = Model(Request.CHECK)
+    except TypeError:
         return -1
 
-    serverless = Serverless(common)
+    serverless = Serverless(model)
     serverless.set_credentials()
 
     print([{}])
@@ -22,5 +18,4 @@ def execute():
 
 
 if __name__ == '__main__':
-    init(autoreset=True)
     exit(execute())

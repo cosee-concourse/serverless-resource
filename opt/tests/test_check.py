@@ -2,7 +2,7 @@ import unittest
 from unittest.mock import MagicMock
 
 import check
-from concourse import test_common
+from concourse import testutil
 from serverless import Serverless
 
 
@@ -11,7 +11,7 @@ class TestCheck(unittest.TestCase):
         Serverless.execute_command = MagicMock(name='execute_command')
 
     def test_invalid_json(self):
-        test_common.put_stdin(
+        testutil.put_stdin(
             """
             {
                "sourcez":{
@@ -27,7 +27,7 @@ class TestCheck(unittest.TestCase):
         self.assertEqual(check.execute(), -1)
 
     def test_version_not_required_json(self):
-        test_common.put_stdin(
+        testutil.put_stdin(
             """
             {
                "source":{
@@ -40,7 +40,7 @@ class TestCheck(unittest.TestCase):
         self.assertEqual(check.execute(), 0)
 
     def test_version_is_null(self):
-        test_common.put_stdin(
+        testutil.put_stdin(
             """
             {
                "source":{
@@ -54,7 +54,7 @@ class TestCheck(unittest.TestCase):
         self.assertEqual(check.execute(), 0)
 
     def test_version_is_empty(self):
-        test_common.put_stdin(
+        testutil.put_stdin(
             """
             {
                "source":{
@@ -68,7 +68,7 @@ class TestCheck(unittest.TestCase):
         self.assertEqual(check.execute(), 0)
 
     def test_json(self):
-        test_common.put_stdin(
+        testutil.put_stdin(
             """
             {
                "source":{

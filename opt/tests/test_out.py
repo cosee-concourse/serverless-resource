@@ -4,7 +4,7 @@ from unittest.mock import MagicMock, patch
 from colorama import init
 
 import out
-from concourse import test_common
+from concourse import testutil
 from serverless import Serverless
 
 
@@ -14,7 +14,7 @@ class TestOut(unittest.TestCase):
         Serverless.execute_command = MagicMock(name='execute_command')
 
     def test_invalid_json(self):
-        test_common.put_stdin(
+        testutil.put_stdin(
             """
             {
               "source": {
@@ -29,7 +29,7 @@ class TestOut(unittest.TestCase):
         self.assertEqual(out.execute('/'), -1)
 
     def test_params_required_json(self):
-        test_common.put_stdin(
+        testutil.put_stdin(
             """
             {
               "source": {
@@ -45,7 +45,7 @@ class TestOut(unittest.TestCase):
     def test_deploy(self, mock_shutil):
         Serverless.execute_command.return_value = 0
 
-        test_common.put_stdin(
+        testutil.put_stdin(
             """
             {
               "source": {
@@ -68,7 +68,7 @@ class TestOut(unittest.TestCase):
     def test_remove(self):
         Serverless.execute_command.return_value = 0
 
-        test_common.put_stdin(
+        testutil.put_stdin(
             """
             {
               "source": {
@@ -91,7 +91,7 @@ class TestOut(unittest.TestCase):
     def test_json_deploy_region(self, mock_shutil):
         Serverless.execute_command.return_value = 0
 
-        test_common.put_stdin(
+        testutil.put_stdin(
             """
             {
               "source": {

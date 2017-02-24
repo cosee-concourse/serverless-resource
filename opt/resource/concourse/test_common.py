@@ -1,8 +1,6 @@
-import sys
 import unittest
-from io import StringIO
 
-from concourse import common
+from concourse import common, testutil
 
 
 class TestCommon(unittest.TestCase):
@@ -19,32 +17,12 @@ class TestCommon(unittest.TestCase):
         }
         """)
 
-    def setUp(self):
-        self.common_instance = common.Common()
-
     def test_getPayload(self):
-        put_stdin(self.standard_payload)
-        self.common_instance.load_payload()
-        result = self.common_instance.get_payload()
+        testutil.put_stdin(self.standard_payload)
+        result = common.load_payload()
         self.assertEqual(result['source']['access_key_id'], "apiKey123")
         self.assertEqual(result['source']['secret_access_key'], "secretKey321")
         self.assertEqual(result['version']['ref'], "version-v1-dev")
-
-    def test_getApiKey(self):
-        put_stdin(self.standard_payload)
-        self.common_instance.load_payload()
-        api_key = self.common_instance.get_api_key()
-        self.assertEqual(api_key, "apiKey123")
-
-    def test_getSecretKey(self):
-        put_stdin(self.standard_payload)
-        self.common_instance.load_payload()
-        secret_key = self.common_instance.get_secret()
-        self.assertEqual(secret_key, "secretKey321")
-
-
-def put_stdin(content):
-    sys.stdin = StringIO(content)
 
 
 if __name__ == '__main__':

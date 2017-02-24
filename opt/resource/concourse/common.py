@@ -8,69 +8,45 @@ from colorama import Fore
 from jsonschema import Draft4Validator
 
 
-class Common:
-    def __init__(self):
-        self.payload = ''
-        self.directory = ''
+def load_payload():
+    payload = json.load(sys.stdin)
+    _, file_name = tempfile.mkstemp()
+    log_info("Logging payload to {}".format(file_name))
+    with open(file_name, 'w') as fp:
+        fp.write(json.dumps(payload))
+    return payload
 
-    def load_payload(self):
-        payload = json.load(sys.stdin)
-        _, file_name = tempfile.mkstemp()
-        Common.log("Logging payload to {}".format(file_name))
-        with open(file_name, 'w') as fp:
-            fp.write(json.dumps(payload))
-        self.payload = payload
-        Common.log(Fore.YELLOW + str(payload))
 
-    def get_payload(self):
-        return self.payload
+def validate_payload(payload,schema):
+    return validate_json(payload, schema)
 
-    def get_api_key(self):
-        api_key = self.payload['source']['access_key_id']
-        return api_key
 
-    def get_secret(self):
-        secret_key = self.payload['source']['secret_access_key']
-        return secret_key
+def log(*args, **kwargs):
+    print(*args, file=sys.stderr, **kwargs)
 
-    def get_stage(self):
-        try:
-            stage = self.payload['version']['stage']
-        except KeyError:
-            stage = None
-        return stage
 
-    def get_region(self):
-        if 'region_name' in self.payload['source']:
-            return self.payload['source']['region_name']
-        return None
+def validate_json(input, schema):
+    v = Draft4Validator(schema)
 
-    def get_serverless_file(self):
-        serverless_file = self.payload['params']['serverless_file']
-        serverless_filepath = os.path.join(serverless_file, 'serverless.yml')
-        return serverless_filepath
+    valid = True
 
-    def get_artifact_folder(self):
-        try:
-            artifact_folder = self.payload['params']['artifact_folder']
-        except KeyError:
-            artifact_folder = None
-        return artifact_folder
+    for error in sorted(v.iter_errors(input), key=str):
+        valid = False
+        log_error("JSON Validation ERROR: " + error.message)
 
-    def validate_payload(self, schema):
-        return Common.validate_json(self.payload, schema)
+    if not valid:
+        raise TypeError
 
-    @staticmethod
-    def log(*args, **kwargs):
-        print(*args, file=sys.stderr, **kwargs)
 
-    @staticmethod
-    def validate_json(payload, schema):
-        v = Draft4Validator(schema)
-        valid = True
+def log_error(message):
+    log(Fore.RED + str(message))
 
-        for error in sorted(v.iter_errors(payload), key=str):
-            Common.log(Fore.WHITE + Back.RED + error.message)
-            valid = False
 
-        return valid
+def log_warning(message):
+    log(Fore.YELLOW + str(message))
+    log(Fore.RED)
+
+
+def log_info(message):
+    log(Fore.BLUE + str(message))
+    log(Fore.RED)

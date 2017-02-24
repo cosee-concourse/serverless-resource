@@ -3,7 +3,7 @@ from io import TextIOWrapper
 from unittest.mock import MagicMock, patch
 
 import in_
-from concourse import test_common
+from concourse import testutil
 from serverless import Serverless
 
 
@@ -12,7 +12,7 @@ class TestInput(unittest.TestCase):
         Serverless.execute_command = MagicMock(name='execute_command')
 
     def test_invalid_json(self):
-        test_common.put_stdin(
+        testutil.put_stdin(
             """
             {
               "source": {
@@ -30,7 +30,7 @@ class TestInput(unittest.TestCase):
         with patch("builtins.open", create=True) as mock_open:
             mock_open.return_value = MagicMock(spec=TextIOWrapper)
 
-            test_common.put_stdin(
+            testutil.put_stdin(
                 """
                 {
                   "source": {
