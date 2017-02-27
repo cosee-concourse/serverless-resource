@@ -1,8 +1,6 @@
 import unittest
 from unittest.mock import MagicMock, patch
 
-from colorama import init
-
 import out
 from concourse import testutil
 from serverless import Serverless
@@ -10,7 +8,6 @@ from serverless import Serverless
 
 class TestOut(unittest.TestCase):
     def setUp(self):
-        init(autoreset=True)
         Serverless.execute_command = MagicMock(name='execute_command')
 
     def test_invalid_json(self):
@@ -41,6 +38,26 @@ class TestOut(unittest.TestCase):
 
         self.assertEqual(out.execute('/'), -1)
 
+    def test_deploy_artifact_folder_needed(self):
+        Serverless.execute_command.return_value = 0
+
+        testutil.put_stdin(
+            """
+            {
+              "source": {
+                "access_key_id": "apiKey123",
+                "secret_access_key": "secretKey321"
+              },
+              "params": {
+                "stage": "version-v1-dev",
+                "deploy": true,
+                "serverless_file": "source/ci/"
+              }
+            }
+            """)
+
+        self.assertEqual(out.execute('/'), -1)
+
     @patch("out.shutil")
     def test_deploy(self, mock_shutil):
         Serverless.execute_command.return_value = 0
@@ -62,8 +79,39 @@ class TestOut(unittest.TestCase):
             """)
 
         self.assertEqual(out.execute(r'/tmp/put/'), 0)
-        mock_shutil.copyfile.assert_called_with(r'/tmp/put/source/ci/serverless.yml', r'/tmp/put/artifact/lambda/serverless.yml')
-        Serverless.execute_command.assert_called_with(['deploy', '--stage', 'version-v1-dev'], r'/tmp/put/artifact/lambda')
+        mock_shutil.copyfile.assert_called_with(r'/tmp/put/source/ci/serverless.yml',
+                                                r'/tmp/put/artifact/lambda/serverless.yml')
+        Serverless.execute_command.assert_called_with(['deploy', '--stage', 'version-v1-dev'],
+                                                      r'/tmp/put/artifact/lambda')
+
+    @patch("io.open")
+    @patch("out.shutil")
+    def test_deploy_with_stage_file(self, mock_shutil, mock_io_open):
+        Serverless.execute_command.return_value = 0
+        mock_file = MagicMock()
+        mock_io_open.return_value = mock_file
+        mock_file.read.return_value = "release"
+
+        testutil.put_stdin(
+            """
+            {
+              "source": {
+                "access_key_id": "apiKey123",
+                "secret_access_key": "secretKey321"
+              },
+              "params": {
+                "stage_file": "naming/stage",
+                "deploy": true,
+                "artifact_folder": "artifact/lambda",
+                "serverless_file": "source/ci/"
+              }
+            }
+            """)
+
+        self.assertEqual(out.execute(r'/tmp/put/'), 0)
+        mock_shutil.copyfile.assert_called_with(r'/tmp/put/source/ci/serverless.yml',
+                                                r'/tmp/put/artifact/lambda/serverless.yml')
+        Serverless.execute_command.assert_called_with(['deploy', '--stage', 'release'], r'/tmp/put/artifact/lambda')
 
     def test_remove(self):
         Serverless.execute_command.return_value = 0
@@ -78,7 +126,6 @@ class TestOut(unittest.TestCase):
               "params": {
                 "stage": "version-v1-dev",
                 "remove": true,
-                "artifact_folder": "artifact/lambda",
                 "serverless_file": "source/ci/"
               }
             }
@@ -86,6 +133,31 @@ class TestOut(unittest.TestCase):
 
         self.assertEqual(out.execute(r'/tmp/put/'), 0)
         Serverless.execute_command.assert_called_with(['remove', '--stage', 'version-v1-dev'], r'/tmp/put/source/ci')
+
+    @patch("io.open")
+    def test_remove_with_stage_file(self, mock_io_open):
+        Serverless.execute_command.return_value = 0
+        mock_file = MagicMock()
+        mock_io_open.return_value = mock_file
+        mock_file.read.return_value = "release"
+
+        testutil.put_stdin(
+            """
+            {
+              "source": {
+                "access_key_id": "apiKey123",
+                "secret_access_key": "secretKey321"
+              },
+              "params": {
+                "stage_file": "release",
+                "remove": true,
+                "serverless_file": "source/ci/"
+              }
+            }
+            """)
+
+        self.assertEqual(out.execute(r'/tmp/put/'), 0)
+        Serverless.execute_command.assert_called_with(['remove', '--stage', 'release'], r'/tmp/put/source/ci')
 
     @patch("out.shutil")
     def test_json_deploy_region(self, mock_shutil):
@@ -109,7 +181,8 @@ class TestOut(unittest.TestCase):
             """)
 
         self.assertEqual(out.execute(r'/tmp/put/'), 0)
-        mock_shutil.copyfile.assert_called_with("/tmp/put/source/ci/serverless.yml", "/tmp/put/artifact/lambda/serverless.yml")
+        mock_shutil.copyfile.assert_called_with("/tmp/put/source/ci/serverless.yml",
+                                                "/tmp/put/artifact/lambda/serverless.yml")
         Serverless.execute_command.assert_called_with(
             ['deploy', '--stage', 'version-v1-dev', '--region', 'eu-south-1'], r'/tmp/put/artifact/lambda')
 

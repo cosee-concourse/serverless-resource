@@ -79,10 +79,19 @@ outSchema = {
             }, {
                 "required": ["remove"]
             }],
-            "required": [
-                "serverless_file",
-                "artifact_folder"
-            ],
+            "dependencies": {
+                "deploy": {
+                    "required": {
+                        "serverless_file",
+                        "artifact_folder"
+                    }
+                },
+                "remove": {
+                    "required": {
+                        "serverless_file"
+                    }
+                }
+            },
             "additionalProperties": "false"
         }
     },

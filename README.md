@@ -40,7 +40,7 @@ Uses `serverless_file` and artifacts in `artifact_folder` to deploy stack.
 * `artifact_folder`: Path to artifacts that are used in the serverless.yml. 
 Make sure the artifact references in the serverless.yml is in this folder.
  
-* `stageFile`: Path to a file that contains the stage name of the stack
+* `stage_file`: Path to a file that contains the stage name of the stack
 
 * `stage`: Stage name for the stack
 
@@ -51,4 +51,70 @@ Make sure the artifact references in the serverless.yml is in this folder.
 Either `stagefile` or `stage` has to be set.
 Also either `deploy` or `remove` has to be set to true.
 
-### Example Configuration
+
+## Example Configuration
+
+### Resource Type
+``` yaml
+- name: serverless
+  type: docker-image
+  source:
+    repository: quay.io/cosee-concourse/serverless-resource
+```
+### Resource
+
+``` yaml
+- name: deploy
+  type: serverless
+  source:
+    access_key_id: ACCESS-KEY
+    secret_access_key: SECRET
+    region_name: eu-west-1
+```
+
+### Plan
+
+``` yaml
+- get: deploy
+```
+
+#### Deploy with fixed stage name
+
+``` yaml
+- put: deploy
+  params:
+    deploy: true
+    stage: release
+    artifact_folder: artifacts/
+    serverless_file: source/ci
+```
+
+#### Deploy with stage name from file
+
+``` yaml
+- put: deploy
+  params:
+    deploy: true
+    stage_file: naming/name
+    artifact_folder: artifacts/
+    serverless_file: source/ci
+```
+#### Remove with fixed stage name
+
+``` yaml
+- put: deploy
+  params:
+    remove: true
+    stage: release
+    serverless_file: source/ci
+```
+
+#### Remove with stage name from file
+
+``` yaml
+- put: deploy
+  params:
+    remove: true
+    stage_file: naming/name
+    serverless_file: source/ci
+```

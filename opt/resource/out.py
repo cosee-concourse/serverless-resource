@@ -16,12 +16,12 @@ def execute(directory):
     except TypeError:
         return -1
 
-    if 'stageFile' in model.payload['params']:
-        stage = io.open(path.join(directory, model.payload['params']['stageFile']), "r").read()
+    if 'stage_file' in model.payload['params']:
+        stage = io.open(path.join(directory, model.payload['params']['stage_file']), "r").read()
     elif 'stage' in model.payload['params']:
         stage = model.payload['params']['stage']
     else:
-        common.log_error("Requires stage or stageFile.")
+        common.log_error("Requires stage or stage_file.")
         return -1
 
     serverless = Serverless(model, stage)
