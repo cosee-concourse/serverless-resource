@@ -56,15 +56,21 @@ class Serverless:
             slsEnv['BUCKET_NAME'] = self.stage
 
         def print_stderr(prog):
-            for line in prog.stderr.readlines():
-                common.log_error(line.rstrip().decode('ascii'))
+            while True:
+                nextline = prog.stderr.readline()
+                if nextline == b'' and prog.poll() is not None:
+                    break
+                common.log_error(nextline.rstrip().decode('ascii'))
 
         def print_stdout(prog):
             """
             print stdout to stderr because only thing printed to stdout should be result json
             """
-            for line in prog.stdout.readlines():
-                common.log_info(line.rstrip().decode('ascii'))
+            while True:
+                nextline = prog.stdout.readline()
+                if nextline == b'' and prog.poll() is not None:
+                    break
+                common.log_info(nextline.rstrip().decode('ascii'))
 
         p = Popen(exec_command, stdout=PIPE, stderr=PIPE, env=slsEnv, cwd=directory or '/')
 
@@ -77,7 +83,8 @@ class Serverless:
         out_p.join()
         out_e.join()
 
-        p.communicate()
-        common.log_info("{} exited with {}".format(exec_command, p.returncode))
+        returncode = p.wait()
+
+        common.log_info("{} exited with {}".format(exec_command[0:2], returncode))
 
         return p.returncode
