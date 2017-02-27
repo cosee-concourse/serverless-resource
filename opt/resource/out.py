@@ -16,10 +16,10 @@ def execute(directory):
     except TypeError:
         return -1
 
-    if 'stage_file' in model.payload['params']:
-        stage = io.open(path.join(directory, model.payload['params']['stage_file']), "r").read()
-    elif 'stage' in model.payload['params']:
-        stage = model.payload['params']['stage']
+    if model.stage_file_exists():
+        stage = io.open(path.join(directory, model.get_stage_file()), "r").read()
+    elif model.stage_name_exists():
+        stage = model.get_stage_name()
     else:
         common.log_error("Requires stage or stage_file.")
         return -1
@@ -31,16 +31,19 @@ def execute(directory):
 
     serverless_filepath = path.join(directory, model.get_serverless_file())
 
-    if 'deploy' in model.payload['params'] and model.payload['params']['deploy']:
+    if model.is_deploy_command():
         artifact_folder = path.join(directory,model.get_artifact_folder())
+
+        # copies serverless file to artifact folder
         shutil.copyfile(serverless_filepath, path.join(artifact_folder, path.basename(serverless_filepath)))
+
         model.directory = path.join(directory, artifact_folder)
         result = serverless.deploy_service()
 
     if result != 0:
         return result
 
-    if 'remove' in model.payload['params'] and model.payload['params']['remove']:
+    if model.is_remove_command():
         model.directory = path.dirname(serverless_filepath)
         serverless.remove_service()
 

@@ -44,6 +44,25 @@ class Model:
         artifact_folder = self.payload['params']['artifact_folder']
         return artifact_folder
 
+    def get_stage_file(self):
+        return self.payload['params']['stage_file']
+
+    def get_stage_name(self):
+        return self.payload['params']['stage']
+
+    def stage_file_exists(self):
+        return 'stage_file' in self.payload['params']
+
+    def stage_name_exists(self):
+        return 'stage' in self.payload['params']
+
+    def is_deploy_command(self):
+        return 'deploy' in self.payload['params'] and self.payload['params']['deploy']
+
+    def is_remove_command(self):
+        return 'remove' in self.payload['params'] and self.payload['params']['remove']
+
+
     def get_stage_version(self):
         try:
             stage = self.payload['version'][VERSION_JSON_NAME]
