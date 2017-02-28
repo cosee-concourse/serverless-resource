@@ -58,6 +58,48 @@ class TestOut(unittest.TestCase):
 
         self.assertEqual(out.execute('/'), -1)
 
+    def test_deploy_stage_needed(self):
+        Serverless.execute_command.return_value = 0
+
+        testutil.put_stdin(
+            """
+            {
+              "source": {
+                "access_key_id": "apiKey123",
+                "secret_access_key": "secretKey321"
+              },
+              "params": {
+                "deploy": true,
+                "serverless_file": "source/ci/",
+                "artifact_folder": "artifacts/"
+
+              }
+            }
+            """)
+
+        self.assertEqual(out.execute('/'), -1)
+
+    def test_deploy_operation_needed(self):
+        Serverless.execute_command.return_value = 0
+
+        testutil.put_stdin(
+            """
+            {
+              "source": {
+                "access_key_id": "apiKey123",
+                "secret_access_key": "secretKey321"
+              },
+              "params": {
+                "stage": "release",
+                "serverless_file": "source/ci/",
+                "artifact_folder": "artifacts/"
+
+              }
+            }
+            """)
+
+        self.assertEqual(out.execute('/'), -1)
+
     @patch("out.shutil")
     def test_deploy(self, mock_shutil):
         Serverless.execute_command.return_value = 0

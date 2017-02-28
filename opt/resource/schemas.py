@@ -70,11 +70,6 @@ outSchema = {
                 }
             },
             "oneOf": [{
-                "required": ["stageFile"]
-            }, {
-                "required": ["stage"]
-            }],
-            "oneOf": [{
                 "required": ["deploy"]
             }, {
                 "required": ["remove"]
