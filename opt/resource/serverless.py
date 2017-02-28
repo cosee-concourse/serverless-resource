@@ -2,7 +2,7 @@ import os
 from multiprocessing import Process
 from subprocess import Popen, PIPE
 
-from concourse import common
+from concourse_common import common
 
 
 class Serverless:

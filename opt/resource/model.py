@@ -1,6 +1,6 @@
 import os
 
-from concourse import common
+from concourse_common import common
 from enum import Enum
 import schemas
 

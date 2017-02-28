@@ -2,3 +2,4 @@ jsonschema>=2.6.0
 pytest>=3.0.6
 awscli>=1.11.49
 colorama>=0.3.7
+git+https://github.com/cosee-concourse/concourse-common.git

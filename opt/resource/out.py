@@ -5,7 +5,7 @@ import shutil
 import sys
 from os import path
 
-from concourse import common
+from concourse_common import common
 from model import Model, Request
 from serverless import Serverless
 

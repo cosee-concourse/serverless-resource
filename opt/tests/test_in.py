@@ -3,7 +3,7 @@ from io import TextIOWrapper
 from unittest.mock import MagicMock, patch
 
 import in_
-from concourse import testutil
+from concourse_common import testutil
 from serverless import Serverless
 
 

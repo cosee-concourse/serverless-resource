@@ -2,7 +2,7 @@ import unittest
 from unittest.mock import MagicMock
 
 import check
-from concourse import testutil
+from concourse_common import testutil
 from serverless import Serverless
 
 
