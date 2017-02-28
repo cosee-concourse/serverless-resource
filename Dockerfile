@@ -1,7 +1,7 @@
 FROM node:7-alpine
 
 RUN mkdir -p /aws && \
-    apk -Uuv add python3 && \
+    apk -Uuv add python3 git && \
     rm /var/cache/apk/*
 
 COPY opt /opt
