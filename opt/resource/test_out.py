@@ -100,10 +100,11 @@ class TestOut(unittest.TestCase):
 
         self.assertEqual(out.execute('/'), -1)
 
+    @patch("out.validate_path")
     @patch("out.shutil")
-    def test_deploy(self, mock_shutil):
+    def test_deploy(self, mock_shutil, mock_validate_filepath):
         Serverless.execute_command.return_value = 0
-
+        mock_validate_filepath.return_value = True
         testutil.put_stdin(
             """
             {
@@ -126,13 +127,15 @@ class TestOut(unittest.TestCase):
         Serverless.execute_command.assert_called_with(['deploy', '--stage', 'version-v1-dev'],
                                                       r'/tmp/put/artifact/lambda')
 
+    @patch("out.validate_path")
     @patch("io.open")
     @patch("out.shutil")
-    def test_deploy_with_stage_file(self, mock_shutil, mock_io_open):
+    def test_deploy_with_stage_file(self, mock_shutil, mock_io_open, mock_validate_path):
         Serverless.execute_command.return_value = 0
         mock_file = MagicMock()
         mock_io_open.return_value = mock_file
         mock_file.read.return_value = "release"
+        mock_validate_path.return_value = True
 
         testutil.put_stdin(
             """
@@ -155,8 +158,10 @@ class TestOut(unittest.TestCase):
                                                 r'/tmp/put/artifact/lambda/serverless.yml')
         Serverless.execute_command.assert_called_with(['deploy', '--stage', 'release'], r'/tmp/put/artifact/lambda')
 
-    def test_remove(self):
+    @patch("out.validate_path")
+    def test_remove(self, mock_validate_path):
         Serverless.execute_command.return_value = 0
+        mock_validate_path.return_value = True
 
         testutil.put_stdin(
             """
@@ -176,12 +181,15 @@ class TestOut(unittest.TestCase):
         self.assertEqual(out.execute(r'/tmp/put/'), 0)
         Serverless.execute_command.assert_called_with(['remove', '--stage', 'version-v1-dev'], r'/tmp/put/source/ci')
 
+
+    @patch("out.validate_path")
     @patch("io.open")
-    def test_remove_with_stage_file(self, mock_io_open):
+    def test_remove_with_stage_file(self, mock_io_open, mock_validate_path):
         Serverless.execute_command.return_value = 0
         mock_file = MagicMock()
         mock_io_open.return_value = mock_file
         mock_file.read.return_value = "release"
+        mock_validate_path.return_value = True
 
         testutil.put_stdin(
             """
@@ -201,9 +209,11 @@ class TestOut(unittest.TestCase):
         self.assertEqual(out.execute(r'/tmp/put/'), 0)
         Serverless.execute_command.assert_called_with(['remove', '--stage', 'release'], r'/tmp/put/source/ci')
 
+    @patch("out.validate_path")
     @patch("out.shutil")
-    def test_json_deploy_region(self, mock_shutil):
+    def test_deploy_with_region(self, mock_shutil, mock_validate_filepath):
         Serverless.execute_command.return_value = 0
+        mock_validate_filepath.return_value = True
 
         testutil.put_stdin(
             """
