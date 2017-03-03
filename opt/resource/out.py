@@ -47,6 +47,10 @@ def execute(directory):
     serverless_filepath = path.join(directory, get_params_value(payload, SERVERLESS_FILE_KEY),
                                     SERVERLESS_CONFIG_FILENAME)
 
+    if not validate_path(serverless_filepath):
+        log_error("Serverless config does not exist")
+        return -1
+
     if is_deploy_command(payload):
         artifact_folder = path.join(directory, get_params_value(payload, ARTIFACT_FOLDER_KEY))
 
@@ -70,6 +74,6 @@ def execute(directory):
 
 
 if __name__ == '__main__':
-    if check_system_argument_number():
+    if not check_system_argument_number():
         exit(-1)
     exit(execute(sys.argv[1]))

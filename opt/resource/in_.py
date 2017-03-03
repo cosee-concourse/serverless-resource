@@ -24,6 +24,6 @@ def execute(directory):
 
 
 if __name__ == '__main__':
-    if check_system_argument_number():
+    if not check_system_argument_number():
         exit(-1)
     exit(execute(sys.argv[1]))
