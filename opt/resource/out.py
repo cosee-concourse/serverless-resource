@@ -1,60 +1,75 @@
 #! /usr/bin/env python3
-import io
-import json
 import shutil
-import sys
 from os import path
 
-from concourse_common import common
-from model import Model, Request
+from concourse_common import ioutil
+from concourse_common.common import *
+from concourse_common.jsonutil import *
+
+import schemas
+from model import *
 from serverless import Serverless
 
 
+SERVERLESS_CONFIG_FILENAME = 'serverless.yml'
+
+
+def is_deploy_command(payload):
+    if contains_params_key(payload, DEPLOY_KEY):
+        return get_params_value(payload, DEPLOY_KEY)
+    return False
+
+
+def is_remove_command(payload):
+    if contains_params_key(payload, REMOVE_KEY):
+        return get_params_value(payload, REMOVE_KEY)
+    return False
+
+
 def execute(directory):
-    try:
-        model = Model(Request.OUT)
-    except TypeError:
+    valid, payload = load_and_validate_payload(schemas, Request.OUT)
+    if not valid:
         return -1
 
-    if model.stage_file_exists():
-        stage = io.open(path.join(directory, model.get_stage_file()), "r").read()
-    elif model.stage_name_exists():
-        stage = model.get_stage_name()
+    if contains_params_key(payload, STAGE_FILE_KEY):
+        stage = ioutil.read_file(path.join(directory, get_params_value(payload, STAGE_FILE_KEY)))
+    elif contains_params_key(payload, STAGE_KEY):
+        stage = get_params_value(payload, STAGE_KEY)
     else:
-        common.log_error("Requires stage or stage_file.")
+        log_error("Requires stage or stage_file.")
         return -1
 
-    serverless = Serverless(model, stage)
+    serverless = Serverless(payload, directory, stage)
     serverless.set_credentials()
 
     result = 0
 
-    serverless_filepath = path.join(directory, model.get_serverless_file())
+    serverless_filepath = path.join(directory, get_params_value(payload, SERVERLESS_FILE_KEY),
+                                    SERVERLESS_CONFIG_FILENAME)
 
-    if model.is_deploy_command():
-        artifact_folder = path.join(directory,model.get_artifact_folder())
+    if is_deploy_command(payload):
+        artifact_folder = path.join(directory, get_params_value(payload, ARTIFACT_FOLDER_KEY))
 
         # copies serverless file to artifact folder
         shutil.copyfile(serverless_filepath, path.join(artifact_folder, path.basename(serverless_filepath)))
 
-        model.directory = path.join(directory, artifact_folder)
+        serverless.directory = path.join(directory, artifact_folder)
         result = serverless.deploy_service()
 
     if result != 0:
         return result
 
-    if model.is_remove_command():
-        model.directory = path.dirname(serverless_filepath)
+    if is_remove_command(payload):
+        serverless.directory = path.dirname(serverless_filepath)
         serverless.remove_service()
 
     if result == 0:
-        print(json.dumps({'version': {'stage': stage}}))
+        print(get_version_output('stage', VERSION_KEY_NAME))
 
     return result
 
 
 if __name__ == '__main__':
-    if len(sys.argv) < 2:
-        common.log_error("Wrong number of arguments!")
+    if check_system_argument_number():
         exit(-1)
     exit(execute(sys.argv[1]))

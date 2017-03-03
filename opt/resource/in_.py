@@ -1,35 +1,29 @@
 #! /usr/bin/env python3
-import json
-import os
-import sys
 
-from concourse_common import common
-from model import Model, Request
+from concourse_common.common import *
+from concourse_common.jsonutil import *
+
+import schemas
+from model import *
 from serverless import Serverless
 
 
 def execute(directory):
-    try:
-        model = Model(Request.IN)
-    except TypeError:
+    valid, payload = load_and_validate_payload(schemas, Request.IN)
+    if not valid:
         return -1
 
-    serverless = Serverless(model, directory)
+    serverless = Serverless(payload, directory)
     serverless.set_credentials()
 
-    with open(os.path.join(directory, "stage"), "w+") as file:
-        file.write(model.get_stage_version())
+    with open(join_paths(directory, "stage"), "w+") as file:
+        file.write(get_version(payload, VERSION_KEY_NAME))
 
-    if model.get_stage_version() is None:
-        print([{}])
-    else:
-        print(json.dumps({"version": {"stage": model.get_stage_version()}}))
-
+    get_version_output(get_version(payload, VERSION_KEY_NAME), VERSION_KEY_NAME)
     return 0
 
 
 if __name__ == '__main__':
-    if len(sys.argv) < 2:
-        common.log_error("Wrong number of arguments!")
+    if check_system_argument_number():
         exit(-1)
     exit(execute(sys.argv[1]))

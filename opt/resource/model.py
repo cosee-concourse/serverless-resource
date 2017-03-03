@@ -1,77 +1,12 @@
-import os
+VERSION_KEY_NAME = 'stage'
 
-from concourse_common import common
-from enum import Enum
-import schemas
+ACCESS_KEY = 'access_key_id'
+SECRET_KEY = 'secret_access_key'
+REGION_NAME_KEY = 'region_name'
 
-VERSION_JSON_NAME = 'stage'
-
-
-class Model:
-
-    def __init__(self, request):
-        self.payload = common.load_payload()
-        self.directory = ''
-
-        if request == Request.CHECK:
-            schema = schemas.checkSchema
-        elif request == Request.IN:
-            schema = schemas.inSchema
-        else:
-            schema = schemas.outSchema
-
-        common.validate_payload(self.payload, schema)
-
-    def get_access_key(self):
-        access_key = self.payload['source']['access_key_id']
-        return access_key
-
-    def get_secret(self):
-        secret_key = self.payload['source']['secret_access_key']
-        return secret_key
-
-    def get_region_name(self):
-        if 'region_name' in self.payload['source']:
-            return self.payload['source']['region_name']
-        return None
-
-    def get_serverless_file(self):
-        serverless_file = self.payload['params']['serverless_file']
-        serverless_filepath = os.path.join(serverless_file, 'serverless.yml')
-        return serverless_filepath
-
-    def get_artifact_folder(self):
-        artifact_folder = self.payload['params']['artifact_folder']
-        return artifact_folder
-
-    def get_stage_file(self):
-        return self.payload['params']['stage_file']
-
-    def get_stage_name(self):
-        return self.payload['params']['stage']
-
-    def stage_file_exists(self):
-        return 'stage_file' in self.payload['params']
-
-    def stage_name_exists(self):
-        return 'stage' in self.payload['params']
-
-    def is_deploy_command(self):
-        return 'deploy' in self.payload['params'] and self.payload['params']['deploy']
-
-    def is_remove_command(self):
-        return 'remove' in self.payload['params'] and self.payload['params']['remove']
-
-
-    def get_stage_version(self):
-        try:
-            stage = self.payload['version'][VERSION_JSON_NAME]
-        except KeyError:
-            stage = None
-        return stage
-
-
-class Request(Enum):
-    CHECK = 1
-    IN = 2
-    OUT = 3
+SERVERLESS_FILE_KEY = 'serverless_file'
+ARTIFACT_FOLDER_KEY = 'artifact_folder'
+STAGE_FILE_KEY = 'stage_file'
+STAGE_KEY = 'stage'
+DEPLOY_KEY = 'deploy'
+REMOVE_KEY = 'remove'

@@ -1,50 +1,52 @@
-import os
-from multiprocessing import Process
 from subprocess import Popen, PIPE
 
-from concourse_common import common
+from concourse_common.common import *
+from concourse_common.jsonutil import *
+
+from model import *
 
 
 class Serverless:
-    def __init__(self, model, stage=None):
-        self.model = model
+    def __init__(self, payload, directory, stage=None):
+        self.payload = payload
+        self.directory = directory
         self.stage = stage
 
     def set_credentials(self):
         return self.execute_command(['config', 'credentials',
                                      '--provider', 'aws',
-                                     '--key', self.model.get_access_key(),
-                                     '--secret', self.model.get_secret()])
+                                     '--key', get_source_value(self.payload, ACCESS_KEY),
+                                     '--secret', get_source_value(self.payload, SECRET_KEY)])
 
     def deploy_service(self):
-        if self.model.directory is '':
-            common.log_error("Directory is not set.")
+        if self.directory is '':
+            log_error("Directory is not set.")
             return -1
 
         deploy_command = ['deploy']
         if self.stage is not None:
             deploy_command.extend(['--stage', self.stage])
 
-        region = self.model.get_region_name()
+        region = get_source_value(self.payload, REGION_NAME_KEY)
         if region is not None:
             deploy_command.extend(['--region', region])
 
-        return self.execute_command(deploy_command, self.model.directory)
+        return self.execute_command(deploy_command, self.directory)
 
     def remove_service(self):
-        if self.model.directory is '':
-            common.log_error("Directory is not set.")
+        if self.directory is '':
+            log_error("Directory is not set.")
             return -1
 
         remove_command = ['remove']
         if self.stage is not None:
             remove_command.extend(['--stage', self.stage])
 
-        region = self.model.get_region_name()
+        region = get_source_value(self.payload, REGION_NAME_KEY)
         if region is not None:
             remove_command.extend(['--region', region])
 
-        return self.execute_command(remove_command, self.model.directory)
+        return self.execute_command(remove_command, self.directory)
 
     def execute_command(self, command, directory=None):
         exec_command = ['sls']
@@ -55,36 +57,12 @@ class Serverless:
             slsEnv['STAGE'] = self.stage
             slsEnv['BUCKET_NAME'] = self.stage
 
-        def print_stderr(prog):
-            while True:
-                nextline = prog.stderr.readline()
-                if nextline == b'' and prog.poll() is not None:
-                    break
-                common.log_error(nextline.rstrip().decode('ascii'))
+        p = Popen(exec_command, stdout=PIPE, stderr=PIPE, env=slsEnv, cwd=directory or '/', universal_newlines=True)
 
-        def print_stdout(prog):
-            """
-            print stdout to stderr because only thing printed to stdout should be result json
-            """
-            while True:
-                nextline = prog.stdout.readline()
-                if nextline == b'' and prog.poll() is not None:
-                    break
-                common.log_info(nextline.rstrip().decode('ascii'))
+        out, err = p.communicate()
+        log_info(out)
+        log_error(err)
 
-        p = Popen(exec_command, stdout=PIPE, stderr=PIPE, env=slsEnv, cwd=directory or '/')
-
-        out_p = Process(target=print_stdout(p))
-        out_e = Process(target=print_stderr(p))
-
-        out_e.start()
-        out_p.start()
-
-        out_p.join()
-        out_e.join()
-
-        returncode = p.wait()
-
-        common.log_info("{} exited with {}".format(exec_command[0:2], returncode))
+        log_info("{} exited with {}".format(exec_command[0:2], p.returncode))
 
         return p.returncode
