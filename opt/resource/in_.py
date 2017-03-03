@@ -19,7 +19,7 @@ def execute(directory):
     with open(join_paths(directory, "stage"), "w+") as file:
         file.write(get_version(payload, VERSION_KEY_NAME))
 
-    get_version_output(get_version(payload, VERSION_KEY_NAME), VERSION_KEY_NAME)
+    print(get_version_output(get_version(payload, VERSION_KEY_NAME), VERSION_KEY_NAME))
     return 0
 
 
