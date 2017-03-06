@@ -31,7 +31,7 @@ class S3Blanker:
         return bucket_list
 
     def empty_buckets_for_serverless_config(self, file_path, stage):
-        stack_name = self.get_service_name(file_path) + stage
+        stack_name = "{}-{}".format(self.get_service_name(file_path),stage)
         client = self.client_init('cloudformation')
 
         buckets = self.get_buckets_from_stack(client, stack_name)
