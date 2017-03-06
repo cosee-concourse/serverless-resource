@@ -158,10 +158,12 @@ class TestOut(unittest.TestCase):
                                                 r'/tmp/put/artifact/lambda/serverless.yml')
         Serverless.execute_command.assert_called_with(['deploy', '--stage', 'release'], r'/tmp/put/artifact/lambda')
 
+    @patch("out.S3Blanker")
     @patch("out.validate_path")
-    def test_remove(self, mock_validate_path):
+    def test_remove(self, mock_validate_path, mock_s3blanker):
         Serverless.execute_command.return_value = 0
         mock_validate_path.return_value = True
+        mock_class_s3blanker = mock_s3blanker()
 
         testutil.put_stdin(
             """
@@ -180,16 +182,18 @@ class TestOut(unittest.TestCase):
 
         self.assertEqual(out.execute(r'/tmp/put/'), 0)
         Serverless.execute_command.assert_called_with(['remove', '--stage', 'version-v1-dev'], r'/tmp/put/source/ci')
+        mock_class_s3blanker.empty_buckets_for_serverless_config.assert_called_with('/tmp/put/source/ci/serverless.yml', 'version-v1-dev')
 
-
+    @patch("out.S3Blanker")
     @patch("out.validate_path")
     @patch("io.open")
-    def test_remove_with_stage_file(self, mock_io_open, mock_validate_path):
+    def test_remove_with_stage_file(self, mock_io_open, mock_validate_path, mock_s3blanker):
         Serverless.execute_command.return_value = 0
         mock_file = MagicMock()
         mock_io_open.return_value = mock_file
         mock_file.read.return_value = "release"
         mock_validate_path.return_value = True
+        mock_class_s3blanker = mock_s3blanker()
 
         testutil.put_stdin(
             """
@@ -208,6 +212,8 @@ class TestOut(unittest.TestCase):
 
         self.assertEqual(out.execute(r'/tmp/put/'), 0)
         Serverless.execute_command.assert_called_with(['remove', '--stage', 'release'], r'/tmp/put/source/ci')
+        mock_class_s3blanker.empty_buckets_for_serverless_config.assert_called_with('/tmp/put/source/ci/serverless.yml', 'release')
+
 
     @patch("out.validate_path")
     @patch("out.shutil")

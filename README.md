@@ -33,6 +33,8 @@ Checks for correct source configuration and AWS credentials.
 _stage_ is available as environment variable _STAGE_. Use it as `($env:STAGE)` inside serverless.yml
 Uses `serverless_file` and artifacts in `artifact_folder` to deploy stack.
 
+Warning: Removing the stack will remove all resources and all contents of every bucket defined in the stack
+
 #### Parameters
  
 * `serverless_file`: Folder path that contains serverless.yml. 

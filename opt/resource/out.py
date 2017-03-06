@@ -9,6 +9,7 @@ from concourse_common.jsonutil import *
 import schemas
 from model import *
 from serverless import Serverless
+from s3blanker import S3Blanker
 
 
 SERVERLESS_CONFIG_FILENAME = 'serverless.yml'
@@ -64,6 +65,8 @@ def execute(directory):
         return result
 
     if is_remove_command(payload):
+        blanker = S3Blanker(get_source_value(payload, ACCESS_KEY), get_source_value(payload, SECRET_KEY))
+        blanker.empty_buckets_for_serverless_config(serverless_filepath, stage)
         serverless.directory = path.dirname(serverless_filepath)
         serverless.remove_service()
 
