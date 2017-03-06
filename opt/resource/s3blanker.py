@@ -44,6 +44,8 @@ class S3Blanker:
     def empty_bucket(client, bucket_name):
         objects = client.list_objects_v2(Bucket=bucket_name)
         keys = []
+        if objects['KeyCount'] == 0:
+            return
         for content in objects['Contents']:
             keys.append({
                 'Key': content['Key']
