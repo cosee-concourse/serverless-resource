@@ -67,6 +67,9 @@ def execute(directory):
     if is_remove_command(payload):
         blanker = S3Blanker(get_source_value(payload, ACCESS_KEY), get_source_value(payload, SECRET_KEY), get_source_value(payload, REGION_NAME_KEY))
         blanker.empty_buckets_for_serverless_config(serverless_filepath, stage)
+
+        log_info("Removed contents of all buckets")
+
         serverless.directory = path.dirname(serverless_filepath)
         serverless.remove_service()
 
