@@ -5,15 +5,17 @@ S3_RESOURCE_TYPE_NAME = 'AWS::S3::Bucket'
 
 
 class S3Blanker:
-    def __init__(self, access_key, secret_key):
+    def __init__(self, access_key, secret_key, region_name):
         self.access_key = access_key
         self.secret_key = secret_key
+        self.region_name = region_name
 
     def client_init(self, service_name):
         client = boto3.client(
             service_name,
             aws_access_key_id=self.access_key,
             aws_secret_access_key=self.secret_key,
+            region_name=self.region_name
         )
         return client
 
