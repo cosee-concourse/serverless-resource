@@ -1,5 +1,15 @@
 docker build --pull \
         -t $CONTAINER_IMAGE_NAME:latest \
+        -t $CONTAINER_IMAGE_NAME:1.12.1 \
+        -t $CONTAINER_IMAGE_NAME:1.12 \
+        --build-arg serverlessVersion=1.12.1 .
+
+docker build --pull \
+        -t $CONTAINER_IMAGE_NAME:1.11.0 \
+        -t $CONTAINER_IMAGE_NAME:1.11 \
+        --build-arg serverlessVersion=1.11.0 .
+
+docker build --pull \
         -t $CONTAINER_IMAGE_NAME:1.10.2 \
         -t $CONTAINER_IMAGE_NAME:1.10 \
         --build-arg serverlessVersion=1.10.2 .
