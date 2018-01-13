@@ -2,7 +2,7 @@
 
 [![Build Status](https://travis-ci.org/cosee-concourse/serverless-resource.svg?branch=master)](https://travis-ci.org/cosee-concourse/serverless-resource) [![Docker Repository on Quay](https://quay.io/repository/cosee-concourse/serverless-resource/status "Docker Repository on Quay")](https://quay.io/repository/cosee-concourse/serverless-resource)
 
-Deploys updates and removes [Serverless](http://serverless.io) Stacks on AWS Cloudformation.
+Deploys updates and removes [Serverless](http://serverless.com) Stacks on AWS Cloudformation.
 
 ## Source Configuration
 
