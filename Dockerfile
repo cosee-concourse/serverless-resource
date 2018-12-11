@@ -1,4 +1,4 @@
-FROM node:7-alpine
+FROM node:11-alpine
 
 RUN mkdir -p /aws && \
     apk -Uuv add python3 git && \
